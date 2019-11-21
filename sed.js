@@ -3,57 +3,61 @@ const path = require('path')
 const fs = require('fs')
 const substRegExr = /s\/[a-z0-9]+\/[a-z0-9]+\/?[gp]?/
 const file = obtainFile(argv)
+const containsF = containsOption(argv, 'f')
 const containsN = containsOption(argv, 'n')
 const containsE = containsOption(argv, 'e')
+const containsI = containsOption(argv, 'i')
 const isEAnArray = testEForArray(argv)
 const substCommands = getSubtCommands(argv)
+const iExtension = argv.i
 
-/*console.log(process.argv[2]);
-console.log(process.argv[3]);
-console.log(argv)
-console.log(require('yargs').parse())
-console.log(path.resolve('joe.txt'))
-console.log(path.normalize(path.resolve('../joe.txt')))
-*/
-console.log(argv)
-console.log(file)
-if(containsE) console.log('CONTIENE -E')
-fs.readFile(file, 'utf8', handleFile)
 
-function handleFile(err, data) {
-	if (err) {
-    	console.error(err)
-    	return "error";
-  	}
-  	console.log('Original data:')
-  	console.log(data)
-   	var fileLines = data.split('\r\n')
-   	var mainSubstComm
-   	var mainSubst
-   	if(containsE && isEAnArray){
-   		mainSubstComm = substCommandsToObjectArray(substCommands)
-   		mainSubst = recursiveSubstitute(fileLines,mainSubstComm)
-   	}
-   	else{
-   		mainSubstComm = substCommtoObject(substCommands)
-   		mainSubst = substitute(fileLines, mainSubstComm)
-   	}
-   	console.log(fileLines)
-   	console.log(mainSubstComm)
-   	printSubst(mainSubst, mainSubstComm);
+console.log(argv)
+var data = fs.readFileSync(file, 'utf8')
+var fileLines = data.split('\r\n')
+
+var mainSubstComm
+var mainSubst
+
+if((containsE && isEAnArray) || containsF){
+   	console.log(substCommands)
+   	mainSubstComm = substCommandsToObjectArray(substCommands)
+   	mainSubst = recursiveSubstitute(fileLines,mainSubstComm)
+}
+else{
+   	mainSubstComm = substCommtoObject(substCommands)
+   	mainSubst = substitute(fileLines, mainSubstComm)
 }
 
+console.log(fileLines)
+console.log(mainSubstComm)
+console.log(mainSubst)
+if(containsI){
+	var newText = mainSubst.changedText.join('\n')
+	var fileName = file.split('.')[0]
+	fs.copyFileSync(file, fileName+'.'+iExtension)
+	fs.writeFileSync('empty.txt', newText)	
+}
+printSubst(mainSubst)
 
-function printSubst(substObj, substCommObj){
+function getFileCommands(file){
+	if(containsF) return fs.readFileSync('lou.txt', 'utf8').split('\r\n')
+	else return null
+}
+
+function printSubst(substObj){
 	if(containsN){
-		if(substCommObj.flag === 'p'){
-			console.log(substObj.changedText[substObj.changedRows[0]])
+		for(var row of substObj.changedRows){
+			if(row.p) console.log(substObj.changedText[row.index])
 		}
 	}
 	else{
-		for(var line of substObj.changedText){
+		for(var [index, line] of substObj.changedText.entries()){
 			console.log(line)
-			if(substCommObj.flag === 'p' && line === substObj.changedText[substObj.changedRows[0]]) console.log(line)
+			for(var row of substObj.changedRows){
+				if(row.index === index && row.p) console.log(line)
+			}
+			
 		}
 		
 	}
@@ -61,8 +65,16 @@ function printSubst(substObj, substCommObj){
 }
 
 function getSubtCommands(arg){
-	if(containsN) return arg.n
-	if(containsE) return arg.e
+	if(containsN){
+		if(typeof arg.n === 'boolean' && containsE) return arg.e
+		else return arg.n
+	}
+	if(containsE) {
+		return arg.e
+	}
+	if(containsF){
+		return getFileCommands(arg.f)
+	}
 	else return arg._[0]
 }
 
