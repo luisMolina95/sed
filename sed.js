@@ -36,12 +36,12 @@ if(containsI){
 	var newText = mainSubst.changedText.join('\n')
 	var fileName = file.split('.')[0]
 	fs.copyFileSync(file, fileName+'.'+iExtension)
-	fs.writeFileSync('empty.txt', newText)	
+	fs.writeFileSync(file, newText)	
 }
 printSubst(mainSubst)
 
 function getFileCommands(file){
-	if(containsF) return fs.readFileSync('lou.txt', 'utf8').split('\r\n')
+	if(containsF) return fs.readFileSync(file, 'utf8').split('\r\n')
 	else return null
 }
 
@@ -93,7 +93,7 @@ function recursiveSubstitute(fileLines, substCommObjArray){
 	var finalChangedRows = []
 	for(var substCommObj of substCommObjArray){
 		loopedSubst = substitute(currentLineArray, substCommObj)
-		finalChangedRows.push(loopedSubst.changedRows[0])
+		if(loopedSubst.changedRows[0]) finalChangedRows.push(loopedSubst.changedRows[0])
 		currentLineArray = loopedSubst.changedText
 	}
 	loopedSubst.changedRows = finalChangedRows

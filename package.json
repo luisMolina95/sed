@@ -1,0 +1,31 @@
+{
+  "name": "sed",
+  "version": "1.0.0",
+  "description": "Simple Sed Command Line",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luisMolina95/sed.git"
+  },
+  "keywords": [
+    "luis",
+    "rodolfo",
+    "molina",
+    "molina",
+    "homework",
+    "sed",
+    "applaudo"
+  ],
+  "author": "Luis Rodolfo Molina Molina",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luisMolina95/sed/issues"
+  },
+  "homepage": "https://github.com/luisMolina95/sed#readme",
+  "dependencies": {
+    "yargs": "^15.0.2"
+  }
+}

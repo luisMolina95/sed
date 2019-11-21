@@ -1,0 +1,4 @@
+s/1/uno/p
+s/text/letters
+s/pillow/droggeljug/g
+s/cuatro/4444/g
