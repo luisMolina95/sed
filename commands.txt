@@ -2,4 +2,4 @@ s/1/uno/p
 s/text/letters
 s/pillow/droggeljug/g
 s/uno/globalchangeto1/g
-I AM NOT A SUBSTITUCION COMMAND
+I AM NOT A SUBSTITUTION COMMAND :)

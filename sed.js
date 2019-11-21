@@ -11,8 +11,8 @@ const isEAnArray = testEForArray(argv);
 const substCommands = getSubtCommands(argv);
 const iExtension = argv.i;
 
-console.log('\x1b[34m%s\x1b[0m', 'ARGUMENTS (argv):');
-console.log(argv);
+//console.log('\x1b[34m%s\x1b[0m', 'ARGUMENTS (argv):');
+//console.log(argv);
 checkFile(file);
 var data = fs.readFileSync(file, 'utf8');
 var fileLines = data.split('\r\n');
@@ -20,8 +20,8 @@ var fileLines = data.split('\r\n');
 var mainSubstComm;
 var mainSubst;
 
-console.log('\x1b[34m%s\x1b[0m', 'SUBSTITUTION COMMANDS (substCommands):');
-console.log(substCommands);
+//console.log('\x1b[34m%s\x1b[0m', 'SUBSTITUTION COMMANDS (substCommands):');
+//console.log(substCommands);
 
 if ((containsE && isEAnArray) || containsF) {
   mainSubstComm = substCommandsToObjectArray(substCommands);
@@ -30,23 +30,23 @@ if ((containsE && isEAnArray) || containsF) {
   mainSubstComm = substCommtoObject(substCommands);
   mainSubst = substitute(fileLines, mainSubstComm);
 }
-console.log('\x1b[34m%s\x1b[0m', 'TEXT LINES OBTAIN FROM THE FILE(fileLines):');
-console.log(fileLines);
-console.log(
+//console.log('\x1b[34m%s\x1b[0m', 'TEXT LINES OBTAIN FROM THE FILE(fileLines):');
+//console.log(fileLines);
+/*console.log(
   '\x1b[34m%s\x1b[0m',
   'MAIN SUBSTITUTION COMMANDS OBJECT (mainSubstComm):'
-);
-console.log(mainSubstComm);
-console.log('\x1b[34m%s\x1b[0m', 'MAIN SUSTITUCION OBJECT (mainSubst):');
-console.log(mainSubst);
+);*/
+//console.log(mainSubstComm);
+//console.log('\x1b[34m%s\x1b[0m', 'MAIN SUSTITUCION OBJECT (mainSubst):');
+//console.log(mainSubst);
 if (containsI) {
   var newText = mainSubst.changedText.join('\r\n');
   var fileName = file.split('.')[0];
   fs.copyFileSync(file, fileName + '.' + iExtension);
   fs.writeFileSync(file, newText);
 }
-console.log('\x1b[34m%s\x1b[0m', 'FINAL OUTPUT TEXT:');
-printSubst(mainSubst);
+//console.log('\x1b[34m%s\x1b[0m', 'FINAL OUTPUT TEXT:');
+if (!containsI) printSubst(mainSubst);
 
 function getFileCommands(file) {
   checkFile(file);
