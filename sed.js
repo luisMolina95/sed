@@ -11,6 +11,7 @@ const isEAnArray = testEForArray(argv);
 const substCommands = getSubtCommands(argv);
 const iExtension = argv.i;
 
+console.log('\x1b[34m%s\x1b[0m', 'ARGUMENTOS (argv):');
 console.log(argv);
 checkFile(file);
 var data = fs.readFileSync(file, 'utf8');
@@ -19,17 +20,24 @@ var fileLines = data.split('\r\n');
 var mainSubstComm;
 var mainSubst;
 
+console.log('\x1b[34m%s\x1b[0m', 'COMMANDOS DE SUBSTITUCION (substCommands):');
+console.log(substCommands);
+
 if ((containsE && isEAnArray) || containsF) {
-  console.log(substCommands);
   mainSubstComm = substCommandsToObjectArray(substCommands);
   mainSubst = recursiveSubstitute(fileLines, mainSubstComm);
 } else {
   mainSubstComm = substCommtoObject(substCommands);
   mainSubst = substitute(fileLines, mainSubstComm);
 }
-
+console.log('\x1b[34m%s\x1b[0m', 'TEXT LINES OBTAIN FROM THE FILE(fileLines):');
 console.log(fileLines);
+console.log(
+  '\x1b[34m%s\x1b[0m',
+  'MAIN SUBSTITUTION COMMANDS OBJECT (mainSubstComm):'
+);
 console.log(mainSubstComm);
+console.log('\x1b[34m%s\x1b[0m', 'MAIN SUSTITUCION OBJECT (mainSubst):');
 console.log(mainSubst);
 if (containsI) {
   var newText = mainSubst.changedText.join('\r\n');
@@ -37,6 +45,7 @@ if (containsI) {
   fs.copyFileSync(file, fileName + '.' + iExtension);
   fs.writeFileSync(file, newText);
 }
+console.log('\x1b[34m%s\x1b[0m', 'FINAL OUTPUT TEXT:');
 printSubst(mainSubst);
 
 function getFileCommands(file) {
@@ -65,12 +74,9 @@ function getSubtCommands(arg) {
     if (typeof arg.n === 'boolean' && containsE) return arg.e;
     else return arg.n;
   }
-  if (containsE) {
-    return arg.e;
-  }
-  if (containsF) {
-    return getFileCommands(arg.f);
-  } else return arg._[0];
+  if (containsE) return arg.e;
+  if (containsF) return getFileCommands(arg.f);
+  else return arg._[0];
 }
 
 function isCommValid(command) {
@@ -116,7 +122,7 @@ function substCommtoObject(substComm) {
       flag: substCommArray[3] ? substCommArray[3] : ''
     };
   } else {
-    console.log('The substitution command is not valid');
+    console.log('The substitution "' + substComm + '" command is not valid');
     substCommObj = { action: null, word: null, substitute: null, flag: null };
   }
 
@@ -160,6 +166,9 @@ function checkFile(file) {
   try {
     fs.accessSync(file);
   } catch (error) {
+    console.log(
+      'Unable to access file (incorrect or missing file path: ' + file + ')'
+    );
     process.exit();
   }
 }
