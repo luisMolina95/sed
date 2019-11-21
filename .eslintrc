@@ -5,6 +5,10 @@
 
   "plugins": ["prettier"],
 
+  "parserOptions": {
+  	"ecmaVersion" : 6
+  },
+
   "rules": {
     "prettier/prettier": "error"
   }

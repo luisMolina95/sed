@@ -1,19 +1,20 @@
-const argv = require("yargs").argv;
-const path = require("path");
-const fs = require("fs");
+const argv = require('yargs').argv;
+const path = require('path');
+const fs = require('fs');
 const substRegExr = /s\/[a-z0-9]+\/[a-z0-9]+\/?[gp]?/;
 const file = obtainFile(argv);
-const containsF = containsOption(argv, "f");
-const containsN = containsOption(argv, "n");
-const containsE = containsOption(argv, "e");
-const containsI = containsOption(argv, "i");
+const containsF = containsOption(argv, 'f');
+const containsN = containsOption(argv, 'n');
+const containsE = containsOption(argv, 'e');
+const containsI = containsOption(argv, 'i');
 const isEAnArray = testEForArray(argv);
 const substCommands = getSubtCommands(argv);
 const iExtension = argv.i;
 
 console.log(argv);
-var data = fs.readFileSync(file, "utf8");
-var fileLines = data.split("\r\n");
+checkFile(file);
+var data = fs.readFileSync(file, 'utf8');
+var fileLines = data.split('\r\n');
 
 var mainSubstComm;
 var mainSubst;
@@ -31,15 +32,16 @@ console.log(fileLines);
 console.log(mainSubstComm);
 console.log(mainSubst);
 if (containsI) {
-  var newText = mainSubst.changedText.join("\r\n");
-  var fileName = file.split(".")[0];
-  fs.copyFileSync(file, fileName + "." + iExtension);
+  var newText = mainSubst.changedText.join('\r\n');
+  var fileName = file.split('.')[0];
+  fs.copyFileSync(file, fileName + '.' + iExtension);
   fs.writeFileSync(file, newText);
 }
 printSubst(mainSubst);
 
 function getFileCommands(file) {
-  if (containsF) return fs.readFileSync(file, "utf8").split("\r\n");
+  checkFile(file);
+  if (containsF) return fs.readFileSync(file, 'utf8').split('\r\n');
   else return null;
 }
 
@@ -60,7 +62,7 @@ function printSubst(substObj) {
 
 function getSubtCommands(arg) {
   if (containsN) {
-    if (typeof arg.n === "boolean" && containsE) return arg.e;
+    if (typeof arg.n === 'boolean' && containsE) return arg.e;
     else return arg.n;
   }
   if (containsE) {
@@ -106,15 +108,15 @@ function substCommtoObject(substComm) {
   var substCommObj;
   if (isCommValid(substComm)) {
     var fixedComm = substRegExr.exec(substComm)[0];
-    var substCommArray = fixedComm.split("/");
+    var substCommArray = fixedComm.split('/');
     substCommObj = {
       action: substCommArray[0],
       word: substCommArray[1],
       substitute: substCommArray[2],
-      flag: substCommArray[3] ? substCommArray[3] : ""
+      flag: substCommArray[3] ? substCommArray[3] : ''
     };
   } else {
-    console.log("The substitution command is not valid");
+    console.log('The substitution command is not valid');
     substCommObj = { action: null, word: null, substitute: null, flag: null };
   }
 
@@ -124,19 +126,19 @@ function substCommtoObject(substComm) {
 function substitute(lineArray, substCommObj) {
   var substObj = { changedText: [], isChanged: false, changedRows: [] };
   var change = true;
-  var globalSubst = substCommObj.flag === "g";
+  var globalSubst = substCommObj.flag === 'g';
 
   for (var line of lineArray) {
     if (line.includes(substCommObj.word) && change) {
       substObj.changedRows.push({
         index: lineArray.indexOf(line),
-        p: substCommObj.flag === "p"
+        p: substCommObj.flag === 'p'
       });
       substObj.changedText.push(
         line.replace(substCommObj.word, substCommObj.substitute)
       );
       substObj.isChanged = true;
-      if (substCommObj.flag === "g") change = true;
+      if (substCommObj.flag === 'g') change = true;
       else change = false;
     } else {
       substObj.changedText.push(line);
@@ -151,5 +153,13 @@ function containsOption(arg, option) {
 }
 
 function testEForArray(arg) {
-  return typeof arg.e === "object";
+  return typeof arg.e === 'object';
+}
+
+function checkFile(file) {
+  try {
+    fs.accessSync(file);
+  } catch (error) {
+    process.exit();
+  }
 }
