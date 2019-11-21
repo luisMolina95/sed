@@ -13,7 +13,7 @@ const iExtension = argv.i;
 
 console.log(argv);
 var data = fs.readFileSync(file, "utf8");
-var fileLines = data.split('\r\n');
+var fileLines = data.split("\r\n");
 
 var mainSubstComm;
 var mainSubst;
