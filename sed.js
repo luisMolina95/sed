@@ -11,7 +11,7 @@ const isEAnArray = testEForArray(argv);
 const substCommands = getSubtCommands(argv);
 const iExtension = argv.i;
 
-console.log('\x1b[34m%s\x1b[0m', 'ARGUMENTOS (argv):');
+console.log('\x1b[34m%s\x1b[0m', 'ARGUMENTS (argv):');
 console.log(argv);
 checkFile(file);
 var data = fs.readFileSync(file, 'utf8');
@@ -20,7 +20,7 @@ var fileLines = data.split('\r\n');
 var mainSubstComm;
 var mainSubst;
 
-console.log('\x1b[34m%s\x1b[0m', 'COMMANDOS DE SUBSTITUCION (substCommands):');
+console.log('\x1b[34m%s\x1b[0m', 'SUBSTITUTION COMMANDS (substCommands):');
 console.log(substCommands);
 
 if ((containsE && isEAnArray) || containsF) {
@@ -72,6 +72,7 @@ function printSubst(substObj) {
 function getSubtCommands(arg) {
   if (containsN) {
     if (typeof arg.n === 'boolean' && containsE) return arg.e;
+    else if (containsF) return getFileCommands(arg.f);
     else return arg.n;
   }
   if (containsE) return arg.e;
